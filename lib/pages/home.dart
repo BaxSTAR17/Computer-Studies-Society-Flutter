@@ -1,4 +1,13 @@
+import 'package:computerstudiessociety/pages/about.dart';
+import 'package:computerstudiessociety/pages/attendance.dart';
+import 'package:computerstudiessociety/pages/colors.dart';
+import 'package:computerstudiessociety/pages/courses.dart';
+import 'package:computerstudiessociety/pages/events.dart';
+import 'package:computerstudiessociety/pages/payment.dart';
+import 'package:computerstudiessociety/pages/qpa.dart';
+import 'package:computerstudiessociety/main.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'login.dart';
 
 class HomePage extends StatefulWidget {
@@ -8,11 +17,32 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageNavigationState();
 }
 
+String userName = '';
+
 class _HomePageNavigationState extends State<HomePage> {
   int currentMode = 0, drawerMode = 0;
 
+  Future<void> initUser() async {
+    try {
+      if(supabase.auth.currentUser != null) {
+        final dynamic user = await supabase.from('Student').select().eq('uuid', supabase.auth.currentUser!.id);
+        userName = user[0]['stud_fname'];
+      } else { userName = "NO USER"; }
+    } catch(error) {
+      setState(() {
+        showDialog(context: context, builder: (context) {
+        return AlertDialog(
+            title: Text('ERROR'),
+            content: Text('$error')
+          );
+      });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext homecontext) {
+      initUser();
       return Scaffold(
         appBar: AppBar(
           leading: Builder(
@@ -32,7 +62,7 @@ class _HomePageNavigationState extends State<HomePage> {
               );
             }
           ),
-          backgroundColor: Color.fromARGB(255, 84, 87, 93),
+          backgroundColor: Theme.of(context).primaryColor,
           title: Center(
             child: Text(
               "Logo",
@@ -55,11 +85,18 @@ class _HomePageNavigationState extends State<HomePage> {
             )
           ],
         ),
+        body: Builder(builder: (BuildContext context) {
+          if(currentMode == 0) {
+            return EventsPage();
+          } else if(currentMode == 2) {
+            return AttendancePage();
+          } else { return Container(); }
+        },),
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (int index) { setState(() { currentMode = index; }); },
-          indicatorColor: Color.fromARGB(255, 131, 131, 131),
+          indicatorColor: mainGray,
           selectedIndex: currentMode,
-          backgroundColor: Color.fromARGB(255, 84, 87, 93),
+          backgroundColor: Theme.of(context).primaryColor,
           labelTextStyle: WidgetStateTextStyle.resolveWith(
             (Set<WidgetState> status) {
               final FontWeight selectionBold = status.contains(WidgetState.selected) ? FontWeight.bold : FontWeight.normal;
@@ -85,7 +122,7 @@ class _HomePageNavigationState extends State<HomePage> {
           ]
         ),
         drawer: Drawer(
-          backgroundColor: Colors.blueGrey[800],
+          backgroundColor: secondaryCol,
           child: 
           Builder(
             builder: (context) {
@@ -104,126 +141,115 @@ class _HomePageNavigationState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                 SizedBox(width: 1),
-                                Container(width: 50, height: 50, decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: Colors.white)),
-                                Text("Your Name & Profile Details", style: TextStyle(
-                                  color: Colors.blueGrey[100],
+                                Text(userName, style: TextStyle(
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15
+                                  fontSize: 25
                                 ))
                               ],)
                             ),
-                            Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.blueGrey[800],
-                              border: Border(
-                                top: BorderSide(width: 2, color: Colors.blueGrey),
-                                bottom: BorderSide(width: 2, color: Colors.blueGrey)
-                              )
-                            ),
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                spacing: 10,
-                                children: [
-                                  SizedBox(width: 5),
-                                  Icon(Icons.person, color: Colors.blueGrey[100]),
-                                  Text("Profile", style: TextStyle(color: Colors.blueGrey[100],)),
-                                ],
-                              )
-                            ),
-                          Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.blueGrey[800],
-                              border: Border(
-                                bottom: BorderSide(width: 2, color: Colors.blueGrey)
-                              )
-                            ),
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                spacing: 10,
-                                children: [
-                                  SizedBox(width: 5),
-                                  Icon(Icons.money, color: Colors.blueGrey[100]),
-                                  Text("Balance", style: TextStyle(color: Colors.blueGrey[100],)),
-                                ],
-                              )
-                            ),
-                          Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.blueGrey[800],
-                              border: Border(
-                                bottom: BorderSide(width: 2, color: Colors.blueGrey)
-                              )
-                            ),
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                spacing: 10,
-                                children: [
-                                  SizedBox(width: 5),
-                                  Icon(Icons.receipt, color: Colors.blueGrey[100]),
-                                  Text("Transactions", style: TextStyle(color: Colors.blueGrey[100],)),
-                                ],
-                              )
-                            ),
-                          Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.blueGrey[800],
-                              border: Border(
-                                bottom: BorderSide(width: 2, color: Colors.blueGrey)
-                              )
-                            ),
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                spacing: 10,
-                                children: [
-                                  SizedBox(width: 5),
-                                  Icon(Icons.notifications, color: Colors.blueGrey[100]),
-                                  Text("Notifications", style: TextStyle(color: Colors.blueGrey[100],)),
-                                ],
-                              )
-                            ),
-                          Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.blueGrey[800],
-                              border: Border(
-                                bottom: BorderSide(width: 2, color: Colors.blueGrey)
-                              )
-                            ),
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                spacing: 10,
-                                children: [
-                                  SizedBox(width: 5),
-                                  Icon(Icons.calculate, color: Colors.blueGrey[100]),
-                                  Text("GPA Calculator", style: TextStyle(color: Colors.blueGrey[100],)),
-                                ],
-                              )
-                            ),
+                          Divider(color:lightGray),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => LogInPage())
+                              Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => PaymentPage())
                               );
                             },
                             child: Container(
                               height: 50,
                               decoration: BoxDecoration(
-                              color: Colors.blueGrey[800],
+                                color: secondaryCol,
+                                border: Border(
+                                  bottom: BorderSide(width: 2, color: mainGray)
+                                )
+                              ),
+                              child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  spacing: 10,
+                                  children: [
+                                    SizedBox(width: 5),
+                                    Icon(Icons.money, color: lightGray),
+                                    Text("Payments", style: TextStyle(color: lightGray,)),
+                                  ],
+                                )
+                              ),
+                          ),
+                          Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: secondaryCol,
                               border: Border(
-                                bottom: BorderSide(width: 2, color: Colors.blueGrey)
+                                bottom: BorderSide(width: 2, color: mainGray)
+                              )
+                            ),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                spacing: 10,
+                                children: [
+                                  SizedBox(width: 5),
+                                  Icon(Icons.notifications, color: lightGray),
+                                  Text("Notifications", style: TextStyle(color: lightGray,)),
+                                ],
+                              )
+                            ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => QPAPage())
+                              );
+                            },
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: secondaryCol,
+                                border: Border(
+                                  bottom: BorderSide(width: 2, color: mainGray)
+                                )
+                              ),
+                              child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  spacing: 10,
+                                  children: [
+                                    SizedBox(width: 5),
+                                    Icon(Icons.calculate, color: lightGray),
+                                    Text("QPA Calculator", style: TextStyle(color: lightGray,)),
+                                  ],
+                                )
+                              ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              try {
+                                Supabase.instance.client.auth.signOut();
+                                if(supabase.auth.currentSession == null) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => LogInPage())
+                                  );
+                                }
+                              } catch(error) {
+                                showDialog(context: context, builder: (context) {
+                                  return AlertDialog(
+                                      title: Text('ERROR'),
+                                      content: Text('$error')
+                                    );
+                                });
+                              }
+                            },
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                              color: secondaryCol,
+                              border: Border(
+                                bottom: BorderSide(width: 2, color: mainGray)
                               )),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 spacing: 10,
                                 children: [
                                   SizedBox(width: 5),
-                                  Icon(Icons.logout, color: Colors.blueGrey[100]),
-                                  Text("Log Out", style: TextStyle(color: Colors.blueGrey[100],)),
+                                  Icon(Icons.logout, color: lightGray),
+                                  Text("Log Out", style: TextStyle(color: lightGray,)),
                                 ],
                               )
                             )
@@ -236,38 +262,43 @@ class _HomePageNavigationState extends State<HomePage> {
                               child: Container(
                                 height: 50,
                                 decoration: BoxDecoration(
-                                color: Colors.blueGrey[800],
+                                color: secondaryCol,
                                 border: Border(
-                                  top: BorderSide(width: 2, color: Colors.blueGrey),
-                                  bottom: BorderSide(width: 2, color: Colors.blueGrey)
+                                  top: BorderSide(width: 2, color: mainGray),
+                                  bottom: BorderSide(width: 2, color: mainGray)
                                 )),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   spacing: 10,
                                   children: [
                                     SizedBox(width: 5),
-                                    Icon(Icons.settings, color: Colors.blueGrey[100]),
-                                    Text("Settings", style: TextStyle(color: Colors.blueGrey[100],)),
+                                    Icon(Icons.settings, color: lightGray),
+                                    Text("Settings", style: TextStyle(color: lightGray,)),
                                   ],
                                 )
                               ),
                             ),
-                            Container(
-                              height: 50,
-                              decoration: BoxDecoration(
-                              color: Colors.blueGrey[800],
-                              border: Border(
-                                bottom: BorderSide(width: 2, color: Colors.blueGrey)
-                              )),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                spacing: 10,
-                                children: [
-                                  SizedBox(width: 5),
-                                  Icon(Icons.info, color: Colors.blueGrey[100]),
-                                  Text("Information", style: TextStyle(color: Colors.blueGrey[100],)),
-                                ],
-                              )
+                            GestureDetector(
+                              onTap: () {
+                                setState(() { drawerMode = 2; });
+                              },
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                color: secondaryCol,
+                                border: Border(
+                                  bottom: BorderSide(width: 2, color: mainGray)
+                                )),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  spacing: 10,
+                                  children: [
+                                    SizedBox(width: 5),
+                                    Icon(Icons.info, color: lightGray),
+                                    Text("Information", style: TextStyle(color: lightGray,)),
+                                  ],
+                                )
+                              ),
                             )
                           ])
                       ),
@@ -280,9 +311,9 @@ class _HomePageNavigationState extends State<HomePage> {
                         Container(
                           height: 50,
                           decoration: BoxDecoration(
-                          color: Colors.blueGrey,
+                          color: mainGray,
                           border: Border(
-                            bottom: BorderSide(width: 2, color: Colors.blueGrey)
+                            bottom: BorderSide(width: 2, color: mainGray)
                           )),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -291,14 +322,95 @@ class _HomePageNavigationState extends State<HomePage> {
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.zero,
-                                  backgroundColor: Colors.blueGrey,
+                                  backgroundColor: mainGray,
                                 ),
                                 onPressed: () { setState(() { drawerMode = 0; }); }, 
-                                child: Icon(Icons.arrow_back, color: Colors.blueGrey[100], size: 35)
+                                child: Icon(Icons.arrow_back, color: lightGray, size: 35)
                               ),
+                              Text("Settings", style: TextStyle(color: lightGray, fontSize: 25, fontWeight: FontWeight.bold))
                             ],
                           )
                         )
+                      ],
+                    ),)
+                  ],);
+                case 2:
+                  return Row(children: [
+                    Expanded(child: Column(
+                      children: [
+                        Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                          color: mainGray,
+                          border: Border(
+                            bottom: BorderSide(width: 2, color: mainGray)
+                          )),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            spacing: 10,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  backgroundColor: mainGray,
+                                ),
+                                onPressed: () { setState(() { drawerMode = 0; }); }, 
+                                child: Icon(Icons.arrow_back, color: lightGray, size: 35)
+                              ),
+                              Text("Information", style: TextStyle(color: lightGray, fontSize: 25, fontWeight: FontWeight.bold)),
+                            ],
+                          )
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                              Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => DevTeamPage())
+                              );
+                            },
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: secondaryCol,
+                              border: Border(
+                                bottom: BorderSide(width: 2, color: mainGray)
+                              )
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              spacing: 10,
+                              children: [
+                                SizedBox(width: 5),
+                                Icon(Icons.code, color: lightGray),
+                                Text("About the Dev Team", style: TextStyle(color: lightGray,)),
+                              ],
+                            )
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                              Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => CoursesPage())
+                              );
+                            },
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: secondaryCol,
+                              border: Border(
+                                bottom: BorderSide(width: 2, color: mainGray)
+                              )
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              spacing: 10,
+                              children: [
+                                SizedBox(width: 5),
+                                Icon(Icons.menu_book, color: lightGray),
+                                Text("CCS Programs", style: TextStyle(color: lightGray,)),
+                              ],
+                            )
+                          ),
+                        ),
                       ],
                     ),)
                   ],);

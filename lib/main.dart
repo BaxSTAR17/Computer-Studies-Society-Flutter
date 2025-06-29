@@ -1,9 +1,20 @@
+import 'package:computerstudiessociety/pages/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:computerstudiessociety/pages/login.dart';
+import 'package:computerstudiessociety/pages/colors.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase/src/supabase_client.dart';
 
-void main() {
+Future<void> main() async {
+  await Supabase.initialize(
+    url: 'https://vdoyevekihtqyhdzwhjx.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkb3lldmVraWh0cXloZHp3aGp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5NjA1NTAsImV4cCI6MjA2NDUzNjU1MH0.5Pu6-MnGwhgcLxO5omZzGO4iZFvmoGa8t-xFBKL513k'
+  );
   runApp(const MyApp());
 }
+
+final SupabaseClient supabase = Supabase.instance.client;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -15,9 +26,13 @@ class MyApp extends StatelessWidget {
       title: 'CSS',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 64, 68, 75)),
+        primaryColor: primaryCol,
+        sliderTheme: SliderThemeData(
+          showValueIndicator: ShowValueIndicator.always,
+        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 66, 66, 66)),
       ),
-      home: LogInPage(),
+      home: SplashScreen(),
     );
   }
 }

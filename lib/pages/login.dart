@@ -1,5 +1,9 @@
+import 'package:computerstudiessociety/pages/colors.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
+import '../main.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:async';
 
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
@@ -10,12 +14,30 @@ class LogInPage extends StatefulWidget {
 
 class _LogInPageState extends State<LogInPage> {
   //int drawerMode = 0;
+  final email = TextEditingController();
+  final password = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // final StreamSubscription<AuthState> authListener = Supabase.instance.client.auth.onAuthStateChange.listen((event) {
+    //   final session = event.session;
+    //   if(session == null) { Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LogInPage())); }
+    // });
+  }
+
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext logincontext) {
     return Scaffold(
       body: Container(
-        color: Colors.blueGrey[700],
+        color: secondaryCol,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -24,10 +46,11 @@ class _LogInPageState extends State<LogInPage> {
               SizedBox(
                 width: 300,
                 height: 50,
-                child: TextField(
+                child: TextFormField(
+                  controller: email,
                   decoration: InputDecoration(
-                    labelText: 'Student ID', 
-                    fillColor: Colors.blueGrey[100],
+                    labelText: 'SU Email', 
+                    fillColor: lightGray,
                     filled: true,
                     border: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(100)
@@ -39,11 +62,12 @@ class _LogInPageState extends State<LogInPage> {
               SizedBox(
                 width: 300,
                 height: 50,
-                child: TextField(
+                child: TextFormField(
+                  controller: password,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Password', 
-                    fillColor: Colors.blueGrey[100],
+                    fillColor: lightGray,
                     filled: true,
                     border: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(100)
@@ -51,23 +75,33 @@ class _LogInPageState extends State<LogInPage> {
                   ),
                 )
               ),
-              SizedBox(height: 60),
+              SizedBox(height: 60), 
               GestureDetector(
                 onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage())
-                  );
+                  try {
+                    Supabase.instance.client.auth.signInWithPassword(email: email.text.trim(),password: password.text);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage())
+                    );
+                  } catch(error){
+                    showDialog(context: context, builder: (context) {
+                      return AlertDialog(
+                          title: Text('ERROR'),
+                          content: Text('$error')
+                        );
+                    });
+                  }
                 },
                 child: Container(
                   width: 300,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: Colors.blueGrey[800],
+                    color: darkGray,
                     borderRadius: BorderRadius.all(Radius.circular(100)),
                   ),
                   child: Center(
-                    child: Text("Log In", style: TextStyle(color: Colors.blueGrey[100]))
+                    child: Text("Log In", style: TextStyle(color: lightGray))
                   )
                 ),
               )
