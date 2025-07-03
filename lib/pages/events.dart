@@ -21,121 +21,253 @@ class _EventsPageState extends State<EventsPage> {
         if(promise.connectionState == ConnectionState.waiting) {
           return Scaffold(body: Center(child:CircularProgressIndicator(color: mainBlue)),);
         } else if(promise.hasData) {
-          return ListView.separated(
-            padding: const EdgeInsets.all(0),
-            itemCount: promise.data!.length,
-            itemBuilder: (BuildContext context, int index1) {
-              return FutureBuilder<List<Map<String, dynamic>>>(
-                future: supabase.from('Activity').select().eq('event_id', promise.data[index1]['event_id']),
-                builder: (BuildContext context, AsyncSnapshot<dynamic> actpromise) {
-                  if(actpromise.connectionState == ConnectionState.waiting){
-                    return Text("Loading...");
-                  } else if(actpromise.hasData) {
-                    return ListView.separated(
-                      padding: EdgeInsets.all(5),
-                      itemCount: actpromise.data!.length+1,
+          return Builder(
+            builder: (context) {
+              return ListView.separated(
+                padding: const EdgeInsets.all(0),
+                itemCount: promise.data!.length+1,
+                itemBuilder: (BuildContext context, int index1) {
+                  if(index1 == 0) {
+                    return ListView(
                       shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (BuildContext context, int index) {
-                        if(index == 0) {
-                          return Text(promise.data[index1]['event_name'], style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                          ));
-                        } else {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(context, 
-                                MaterialPageRoute(
-                                  builder: (context) => ActivityPage(data: actpromise.data[index-1])
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
+                      children: [
+                        Row(
+                        children: [
+                          Expanded(
+                            child: TextButton(
+                              
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(20)
+                                ),  
+                                foregroundColor: Colors.white,
+                                textStyle: TextStyle(
+                                  color:Colors.white
                                 )
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: <Color>[
-                                    lightGray,
-                                    lightGray,
-                                    actpromise.data[index-1]['organizer'] == "College of Computer Studies" ? mainBlue : Colors.red.shade900
-                                  ]
-                                ),
-                                borderRadius: BorderRadius.circular(5)
                               ),
-                              height: 80,
-                              child: ListView(
-                                padding: EdgeInsets.all(5),
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        spacing: 10,
-                                        children: [
-                                          Text(actpromise.data[index-1]['act_name'], style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            decoration: TextDecoration.underline,
-                                            fontSize: 20,
-                                          )),
-                                          Text("(${actpromise.data[index-1]['act_type']})", style: TextStyle(
-                                            fontStyle: FontStyle.italic,
-                                            fontSize: 20,
-                                          )),
-                                        ],
-                                      ),
-                                      Builder(
-                                        builder: (context) {
-                                          if(actpromise.data[index-1]['is_required'] == true) {
-                                            return Icon(Icons.error_outline, color: Colors.white,);
-                                          } else { return Container(); }
-                                        }
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Date & Time: ${actpromise.data[index-1]['act_date']}", style: TextStyle(
-                                        fontSize: 14,
-                                      )),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Venue: ${actpromise.data[index-1]['venue']}", style: TextStyle(
-                                        fontSize: 14,
-                                      )),
-                                      Text("by ${actpromise.data[index-1]['organizer']}", style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white
-                                      )),
-                                    ],
-                                  )
-                                ],
-                              )
+                              onPressed: () {},
+                              child: Column(children: [
+                                Icon(Icons.person, size: 40),
+                                const Text("Profile")
+                              ],),
                             ),
-                          );
-                        }
-                      },
-                      separatorBuilder: (BuildContext context, int index) => const SizedBox(
-                        height: 5
-                      ),
+                          ),
+                          Expanded(
+                            child: TextButton(
+                              
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(20)
+                                ),  
+                                foregroundColor: Colors.white,
+                                textStyle: TextStyle(
+                                  color:Colors.white
+                                )
+                              ),
+                              onPressed: () {},
+                              child: Column(children: [
+                                Icon(Icons.notifications, size: 40),
+                                const Text("Notifications")
+                              ],),
+                            ),
+                          ),
+                          Expanded(
+                            child: TextButton(
+                              
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(20)
+                                ),  
+                                foregroundColor: Colors.white,
+                                textStyle: TextStyle(
+                                  color:Colors.white
+                                )
+                              ),
+                              onPressed: () {},
+                              child: Column(children: [
+                                Icon(Icons.map, size: 40),
+                                const Text("Map")
+                              ],),
+                            ),
+                          )
+                        ],),
+                        SizedBox(height: 10,),
+                        Row(
+                        children: [
+                          Expanded(
+                            child: TextButton(
+                              
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(20)
+                                ),  
+                                foregroundColor: Colors.white,
+                                textStyle: TextStyle(
+                                  color:Colors.white
+                                )
+                              ),
+                              onPressed: () {},
+                              child: Column(children: [
+                                Icon(Icons.calculate, size: 30),
+                                const Text("QPA Calc", softWrap: true,)
+                              ],),
+                            ),
+                          ),
+                          Expanded(
+                            child: TextButton(
+                              
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(20)
+                                ),  
+                                foregroundColor: Colors.white,
+                                textStyle: TextStyle(
+                                  color:Colors.white
+                                )
+                              ),
+                              onPressed: () {},
+                              child: Column(children: [
+                                Icon(Icons.info, size: 30),
+                                const Text("Information")
+                              ],),
+                            ),
+                          ),
+                          Expanded(
+                            child: TextButton(
+                              
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(20)
+                                ),  
+                                foregroundColor: Colors.white,
+                                textStyle: TextStyle(
+                                  color:Colors.white
+                                )
+                              ),
+                              onPressed: () {},
+                              child: Column(children: [
+                                Icon(Icons.settings, size: 30),
+                                const Text("Settings")
+                              ],),
+                            ),
+                          )
+                        ],)
+                      ],
                     );
                   } else {
-                    return Text("No events to show.");
+                    return FutureBuilder<List<Map<String, dynamic>>>(
+                      future: supabase.from('Activity').select().eq('event_id', promise.data[index1-1]['event_id']),
+                      builder: (BuildContext context, AsyncSnapshot<dynamic> actpromise) {
+                        if(actpromise.connectionState == ConnectionState.waiting){
+                          return Text("Loading...");
+                        } else if(actpromise.hasData) {
+                          return ListView.separated(
+                            padding: EdgeInsets.all(5),
+                            itemCount: actpromise.data!.length+1,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (BuildContext context, int index) {
+                              if(index == 0) {
+                                return Text(promise.data[index1-1]['event_name'], style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 30,
+                                ));
+                              } else {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(context, 
+                                      MaterialPageRoute(
+                                        builder: (context) => ActivityPage(data: actpromise.data[index-1])
+                                      )
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: <Color>[
+                                          lightGray,
+                                          lightGray,
+                                          actpromise.data[index-1]['organizer'] == "College of Computer Studies" ? mainBlue : Colors.red.shade900
+                                        ]
+                                      ),
+                                      borderRadius: BorderRadius.circular(5)
+                                    ),
+                                    height: 80,
+                                    child: ListView(
+                                      padding: EdgeInsets.all(5),
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              spacing: 10,
+                                              children: [
+                                                Text(actpromise.data[index-1]['act_name'], style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  decoration: TextDecoration.underline,
+                                                  fontSize: 20,
+                                                )),
+                                              ],
+                                            ),
+                                            Builder(
+                                              builder: (context) {
+                                                if(actpromise.data[index-1]['is_required'] == true) {
+                                                  return Icon(Icons.error_outline, color: Colors.white,);
+                                                } else { return Container(); }
+                                              }
+                                            )
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("Date & Time: ${actpromise.data[index-1]['act_date']}", style: TextStyle(
+                                              fontSize: 14,
+                                            )),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("Venue: ${actpromise.data[index-1]['venue']}", style: TextStyle(
+                                              fontSize: 14,
+                                            )),
+                                            Text("by ${actpromise.data[index-1]['organizer']}", style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white
+                                            )),
+                                          ],
+                                        )
+                                      ],
+                                    )
+                                  ),
+                                );
+                              }
+                            },
+                            separatorBuilder: (BuildContext context, int index) => const SizedBox(
+                              height: 5
+                            ),
+                          );
+                        } else {
+                          return Text("No events to show.");
+                        }
+                      }
+                    );
                   }
-                }
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) => const Divider(
-              color: Colors.black
-            ),
+                },
+                  separatorBuilder: (BuildContext context, int index) => const Divider(
+                    color: Colors.white
+                  ),
+                );
+              }
           );
         } else {
           return Scaffold(body: Icon(Icons.signal_wifi_bad, color: mainGray, size: 40));

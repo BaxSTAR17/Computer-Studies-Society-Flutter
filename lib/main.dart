@@ -26,7 +26,19 @@ class MyApp extends StatelessWidget {
       title: 'CSS',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        textTheme: TextTheme(
+          displayLarge: TextStyle(
+            color: Colors.white
+          ),
+          displayMedium: TextStyle(
+            color: Colors.white
+          ),
+          displaySmall: TextStyle(
+            color: Colors.white,
+          )
+        ),
         primaryColor: primaryCol,
+        scaffoldBackgroundColor: primaryCol,
         sliderTheme: SliderThemeData(
           showValueIndicator: ShowValueIndicator.always,
         ),

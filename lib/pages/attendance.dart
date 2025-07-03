@@ -30,6 +30,7 @@ class _AttendancePageState extends State<AttendancePage> {
               if(index == 0) {
                 return Text("Attended Activities", style: TextStyle(
                   fontWeight: FontWeight.bold,
+                  color: Colors.white,
                   fontSize: 30,
                 ));
               } else {
@@ -125,10 +126,13 @@ class _AttendancePageState extends State<AttendancePage> {
                   if(index == 0) {
                     return Text("Attended Activities", style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      color: Colors.white,
                       fontSize: 30,
                     ));
                   } else {
-                    return Text("You haven't attended any activities");
+                    return Text("You haven't attended any activities", style: TextStyle(
+                      color: Colors.white,
+                    ));
                   }
             },
             separatorBuilder: (BuildContext context, int index) => const SizedBox(

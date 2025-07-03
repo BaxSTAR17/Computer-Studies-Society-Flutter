@@ -3,6 +3,7 @@ import 'package:computerstudiessociety/pages/attendance.dart';
 import 'package:computerstudiessociety/pages/colors.dart';
 import 'package:computerstudiessociety/pages/courses.dart';
 import 'package:computerstudiessociety/pages/events.dart';
+import 'package:computerstudiessociety/pages/map.dart';
 import 'package:computerstudiessociety/pages/payment.dart';
 import 'package:computerstudiessociety/pages/qpa.dart';
 import 'package:computerstudiessociety/main.dart';
@@ -62,15 +63,13 @@ class _HomePageNavigationState extends State<HomePage> {
               );
             }
           ),
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: mainBlue,
           title: Center(
-            child: Text(
-              "Logo",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white
-              ),
-            ),
+            child: Image(
+              image: AssetImage('assets/logo.png'),
+              width: 50,
+              height: 50
+            )
           ),
           actions: [
             Container(
@@ -89,6 +88,8 @@ class _HomePageNavigationState extends State<HomePage> {
           if(currentMode == 0) {
             return EventsPage();
           } else if(currentMode == 2) {
+            return MapPage();
+          } else if(currentMode == 1) {
             return AttendancePage();
           } else { return Container(); }
         },),
@@ -96,7 +97,7 @@ class _HomePageNavigationState extends State<HomePage> {
           onDestinationSelected: (int index) { setState(() { currentMode = index; }); },
           indicatorColor: mainGray,
           selectedIndex: currentMode,
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: darkGray,
           labelTextStyle: WidgetStateTextStyle.resolveWith(
             (Set<WidgetState> status) {
               final FontWeight selectionBold = status.contains(WidgetState.selected) ? FontWeight.bold : FontWeight.normal;
@@ -110,14 +111,14 @@ class _HomePageNavigationState extends State<HomePage> {
               label: 'Home',
             ),
             NavigationDestination(
-              icon: Icon(Icons.map_outlined, color: Colors.white), 
-              selectedIcon: Icon(Icons.map, color: Colors.white), 
-              label: 'Map',
-            ),
-            NavigationDestination(
               icon: Icon(Icons.check_box_outlined, color: Colors.white), 
               selectedIcon: Icon(Icons.check_box, color: Colors.white), 
-              label: 'Attendances',
+              label: 'Attendance',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person_outline, color: Colors.white), 
+              selectedIcon: Icon(Icons.person, color: Colors.white), 
+              label: 'Profile',
             )
           ]
         ),
